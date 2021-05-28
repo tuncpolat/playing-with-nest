@@ -1,18 +1,25 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  // nestjs: dependency injection
+  // nestjs: aut. dependency injection
   constructor(private userService: UsersService) {}
 
   @Get()
-  getUsers(): any {
-    return [{ id: 0 }];
+  getUsers(): User[] {
+    return this.userService.findAll();
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string): any {
-    return { id: Number(id) };
+  getUserById(@Param('id') id: string): User {
+    return this.userService.findById(Number(id));
+  }
+
+  @Post()
+  createUser(@Body() body: CreateUserDto): User {
+    return this.userService.createUser(body);
   }
 }
